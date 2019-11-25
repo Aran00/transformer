@@ -11,6 +11,7 @@ class Encoder(nn.Module):
         self.layers = clones(layer, N)
         self.norm = LayerNorm(layer.size)
 
+    # x: tensor of size (batch_size, sentence_length, embed_size)
     def forward(self, x, mask):
         "Pass the input (and mask) through each layer in turn."
         for layer in self.layers:
