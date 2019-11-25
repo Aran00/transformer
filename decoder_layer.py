@@ -14,9 +14,16 @@ class DecoderLayer(nn.Module):
         self.feed_forward = feed_forward
         self.sublayer = clones(SublayerConnection(size, dropout), 3)
 
+    # x:      a tensor of size (batch, sent_length - 1, d_model)
+    # memory: a tensor of size (batch, sent_length, d_model)
     def forward(self, x, memory, src_mask, tgt_mask):
         "Follow Figure 1 (right) for connections."
         m = memory
+        # forward of MultiHeadAttention: [Query, Key, Value]
         x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, tgt_mask))
+        # Yes, the length of query could be different with key and value.
+        # We must have:
+        #   key.length = value.length (sentence length)
+        #   query.dim = key.dim (Or they can not do dot product)
         x = self.sublayer[1](x, lambda x: self.src_attn(x, m, m, src_mask))
         return self.sublayer[2](x, self.feed_forward)

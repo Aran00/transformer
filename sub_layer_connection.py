@@ -14,4 +14,5 @@ class SublayerConnection(nn.Module):
 
     def forward(self, x, sublayer):
         "Apply residual connection to any sublayer with the same size."
+        # The norm seems to be different with in the graph? The process on the graph is (Add & Norm)
         return x + self.dropout(sublayer(self.norm(x)))

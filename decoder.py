@@ -11,6 +11,7 @@ class Decoder(nn.Module):
         self.layers = clones(layer, N)
         self.norm = LayerNorm(layer.size)
 
+    # x: a tensor of size (batch, sent_length - 1, d_model)
     def forward(self, x, memory, src_mask, tgt_mask):
         for layer in self.layers:
             x = layer(x, memory, src_mask, tgt_mask)
