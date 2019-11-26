@@ -19,15 +19,15 @@ class MultiHeadedAttention(nn.Module):
     # What should be the input in this case? So boring to add a linear layer to get v?
     def forward(self, query, key, value, mask=None):
         """Implements Figure 2
-        @param query (tensor(float)]): a tensor of size (batch_size, sentence_length, embed_size)   here embed_size == d_model
-        @param key (tensor(float)]): a tensor of size (batch_size, sentence_length, embed_size)
-        @param value (tensor(float)): a tensor of size (batch_size, sentence_length, embed_size)
-        @param mask (tensor(float)): a tensor of size (batch_size, 1, 1, sentence_length)   (Not sure about whether it's always that size in dim 1,2)
+        @param query (tensor(float)]): a tensor of size (batch_size, query_length, embed_size)   here embed_size == d_model
+        @param key (tensor(float)]): a tensor of size (batch_size, key_length, embed_size)
+        @param value (tensor(float)): a tensor of size (batch_size, value_length, embed_size)
+        @param mask (tensor(int)): a tensor of size (batch_size, 1, sentence_length)   (Not sure about whether it's always that size in dim 1)
         @returns a result tensor
         """
         if mask is not None:
             # Same mask applied to all h heads.
-            mask = mask.unsqueeze(1)
+            mask = mask.unsqueeze(1)            # To be broadcastable with attention result
         nbatches = query.size(0)
 
         # 1) Do all the linear projections in batch from d_model => h x d_k

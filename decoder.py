@@ -12,7 +12,8 @@ class Decoder(nn.Module):
         self.norm = LayerNorm(layer.size)
 
     # x: a tensor of size (batch, sent_length - 1, d_model)
+    #
     def forward(self, x, memory, src_mask, tgt_mask):
         for layer in self.layers:
-            x = layer(x, memory, src_mask, tgt_mask)
+            x = layer(x, memory, src_mask, tgt_mask)   # So all the layers used the same memory here
         return self.norm(x)

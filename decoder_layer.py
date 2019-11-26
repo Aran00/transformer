@@ -14,12 +14,23 @@ class DecoderLayer(nn.Module):
         self.feed_forward = feed_forward
         self.sublayer = clones(SublayerConnection(size, dropout), 3)
 
-    # x:      a tensor of size (batch, sent_length - 1, d_model)
-    # memory: a tensor of size (batch, sent_length, d_model)
+
     def forward(self, x, memory, src_mask, tgt_mask):
         "Follow Figure 1 (right) for connections."
+
+        # x:      a tensor of size (batch, target_length - 1, d_model)
+        # memory: a tensor of size (batch, source_length, d_model)
+
+        """Follow Figure 1 (right) for connections
+        @param x (tensor(float)):      a tensor of size (batch, target_length - 1, d_model)
+        @param memory (tensor(float)): a tensor of size (batch, source_length, d_model)
+        @param src_mask (tensor(int)): a tensor of size (batch_size, 1, source_length)
+        @param tgt_mask (tensor(int)): a tensor of size (batch_size, target_length - 1, target_length - 1) 
+        @returns a result tensor
+        """
         m = memory
         # forward of MultiHeadAttention: [Query, Key, Value]
+        # TBC: In the synthetic example, the tgt_mask is only a lower triangle matrix, but is it the real world data case? Do we also need to consider about word padding?
         x = self.sublayer[0](x, lambda x: self.self_attn(x, x, x, tgt_mask))
         # Yes, the length of query could be different with key and value.
         # We must have:
